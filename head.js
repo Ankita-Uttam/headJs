@@ -17,16 +17,21 @@ function getParsedObject() {
     let fileStartIndex = 0;
     let arguments = getArguments();
 
-    if (arguments[0].toString().startsWith("-n")) {
+    if (arguments[0].startsWith("-n")) {
         parsedObject.option.type = 'line';
-    } else if (arguments[0].toString().startsWith("-c")) {
+    } else if (arguments[0].startsWith("-c")) {
         parsedObject.option.type = 'byte';
+    } else if (arguments[0].startsWith("-") && Number(arguments[0].substring(1, arguments[0].length))) {
+        parsedObject.option.type = 'line';
     }
 
     if (parsedObject.option.type) {
         if (arguments[0].endsWith("-n") || arguments[0].endsWith("-c")) {
             parsedObject.option.count = Number(arguments[1]);
             fileStartIndex = 2;
+        } else if (arguments[0].startsWith("-") && !(arguments[0].startsWith("-n") || arguments[0].startsWith("-c"))) {
+            parsedObject.option.count = Number(arguments[0].substring(1, arguments[0].length));
+            fileStartIndex = 1;
         } else {
             parsedObject.option.count = Number(arguments[0].substring(2, arguments[0].length));
             fileStartIndex = 1;
