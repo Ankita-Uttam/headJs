@@ -103,11 +103,11 @@ function  printFileName(fileName) {
 
 function getReadableFileStream(fileName) {
     const fileStream = require('fs');
-    fs = fileStream.createReadStream(fileName);
+    const fs = fileStream.createReadStream(fileName);
     fs.on('error' , (error) => {
-        // console.log('error has occured');
         console.error(error.message);
         return;
     });
     return fs;
 }
+
