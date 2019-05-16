@@ -15,7 +15,6 @@ function getParsedObject() {
         }
     };
 
-    // let fileStartIndex = 0;
     let arguments = getArguments();
 
     parsedObject.option.type = getParsedOptionType(arguments[0]);
