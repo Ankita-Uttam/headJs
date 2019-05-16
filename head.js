@@ -1,4 +1,4 @@
-executeParsedCommand(getParsedObject(), getArguments());
+executeParsedCommand(getParsedObject());
 
 function getArguments() {
     const [,, ...arguments] = process.argv; // TODO - understand the syntax, array destructing. Also, its cryptic usage, see if you can get something more readable/understandable
