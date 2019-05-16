@@ -15,6 +15,7 @@ function getParsedObject() {
     };
 
     let fileStartIndex = 0;
+    let arguments = getArguments();
 
     if (arguments[0].toString().startsWith("-n")) {
         parsedObject.option.type = 'line';
