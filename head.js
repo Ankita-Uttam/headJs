@@ -1,6 +1,6 @@
 executeParsedCommand(getParsedObject());
 
-function getArguments() {
+function getArguments() { // TODO - takes process as a global, maybe pass through params
     const [,, ...arguments] = process.argv; // TODO - understand the syntax, array destructing. Also, its cryptic usage, see if you can get something more readable/understandable
     return arguments;
 }
@@ -49,19 +49,8 @@ function parseRemainingArguments(parsedObject , arguments) {
         parsedObject.option.count = 10;
     }
 
-    parsedObject.files = getFilePathsFromArgumentList(fileStartIndex, arguments);
+    parsedObject.files = arguments.slice(fileStartIndex);
 
-    // for (let i = fileStartIndex; i < arguments.length; i++) { // TODO - make imperative declarative
-    //     parsedObject.files.push(arguments[i]);
-    // }
-}
-
-function getFilePathsFromArgumentList(index, argumentList) {
-    const filePaths = [];
-    for (let i = index; i < argumentList.length; i++) {
-        filePaths.push(argumentList[i]);
-    }
-    return filePaths;
 }
 
 function getParsedOptionType(argument) {
