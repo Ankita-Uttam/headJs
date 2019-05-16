@@ -10,8 +10,6 @@ function getParsedObject(arguments) {
         }
     };
 
-    // let arguments = getArguments();
-
     parsedObject.option.type = getParsedOptionType(arguments[0]);
     parseRemainingArguments(parsedObject, arguments);
 
@@ -26,7 +24,7 @@ function parseRemainingArguments(parsedObject , arguments) {
             countArgument = arguments[1];
             parsedObject.option.count = Number(countArgument);
             fileStartIndex = 2;
-        } else if (parsedObject.option.type == 'line' && !arguments[0].startsWith("-n")) {
+        } else if (parsedObject.option.type === 'line' && !arguments[0].startsWith("-n")) {
             countArgument = arguments[0].substring(1, arguments[0].length);
             parsedObject.option.count = Number(countArgument);
             fileStartIndex = 1;
