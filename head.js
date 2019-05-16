@@ -10,7 +10,7 @@ function getParsedObject() {
         files: [],
         option: {
             type: null,
-            illegalCount: '',
+            illegalCount: null,
             count: 0
         }
     };
@@ -71,7 +71,7 @@ function executeParsedCommand(parsedObject) {
                     });
                 break;
         }
-    } else {
+    } else if(parsedObject.option.illegalCount) {
         console.log('head: illegal ', parsedObject.option.type , ' count -- ', parsedObject.option.illegalCount);
     }
 }
