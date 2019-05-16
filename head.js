@@ -83,9 +83,9 @@ function printLines(parsedObject, fileName) {
         crlfDelay: Infinity
     });
 
-
     let currentLine = 1;
     let data = '';
+
     rl.on('line' , (line) => {
         if (currentLine > parsedObject.option.count)
             return;
@@ -103,5 +103,11 @@ function  printFileName(fileName) {
 
 function getReadableFileStream(fileName) {
     const fileStream = require('fs');
-    return fileStream.createReadStream(fileName);
+    fs = fileStream.createReadStream(fileName);
+    fs.on('error' , (error) => {
+        // console.log('error has occured');
+        console.error(error.message);
+        return;
+    });
+    return fs;
 }
