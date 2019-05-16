@@ -1,11 +1,6 @@
-executeParsedCommand(getParsedObject());
+executeParsedCommand(getParsedObject(process.argv.slice(2)));
 
-function getArguments() { // TODO - takes process as a global, maybe pass through params
-    const [,, ...arguments] = process.argv; // TODO - understand the syntax, array destructing. Also, its cryptic usage, see if you can get something more readable/understandable
-    return arguments;
-}
-
-function getParsedObject() {
+function getParsedObject(arguments) {
     const parsedObject = {
         files: [],
         option: {
@@ -15,7 +10,7 @@ function getParsedObject() {
         }
     };
 
-    let arguments = getArguments();
+    // let arguments = getArguments();
 
     parsedObject.option.type = getParsedOptionType(arguments[0]);
     parseRemainingArguments(parsedObject, arguments);
