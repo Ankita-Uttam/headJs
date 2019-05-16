@@ -64,18 +64,6 @@ function executeParsedCommand(parsedObject) {
 
 function printBytes(parsedObject, fileName) {
     const readable = getReadableFileStream(fileName);
-    // readable.on('readable', () => {
-    //     let chunk;
-    //     while (null !== (chunk = readable.read())) {
-    //         if(readable.bytesRead == 1 && filesCount > 1) {
-    //             printFileName();
-    //         }
-    //         if (readable.bytesRead > parsedObject.option.count)
-    //             return;
-    //         console.log(chunk);
-    //     }
-    // }).setEncoding('utf8');
-
     readable.on('data', (chunk) => {
         console.log('chunk size: ', chunk.length);
         if (readable.bytesRead < parsedObject.option.count)
