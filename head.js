@@ -80,15 +80,15 @@ function printLines(parsedObject, fileName) {
 
 
     let currentLine = 1;
+    let data = '';
     rl.on('line' , (line) => {
-        if (parsedObject.files.length > 1 && currentLine == 1) {
-            printFileName(fileName);
-        }
         if (currentLine > parsedObject.option.count)
             return;
-        console.log(line);
+        data += line + '\n';
         currentLine++;
-
+    }).on('close', () => {
+        printFileName(fileName);
+        console.log(data);
     });
 }
 
