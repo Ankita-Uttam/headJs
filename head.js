@@ -10,31 +10,40 @@ function getParsedObject() {
         files: [],
         option: {
             type: null,
+            illegalCount: '',
             count: 0
         }
     };
 
     let fileStartIndex = 0;
     let arguments = getArguments();
+    let countArgument = arguments[0];
 
     if (arguments[0].startsWith("-n")) {
         parsedObject.option.type = 'line';
     } else if (arguments[0].startsWith("-c")) {
         parsedObject.option.type = 'byte';
-    } else if (arguments[0].startsWith("-") && Number(arguments[0].substring(1, arguments[0].length))) {
+    } else if (arguments[0].startsWith("-") && Number(arguments[0].substring(1, 2))) {
         parsedObject.option.type = 'line';
     }
 
     if (parsedObject.option.type) {
         if (arguments[0].endsWith("-n") || arguments[0].endsWith("-c")) {
-            parsedObject.option.count = Number(arguments[1]);
+            countArgument = arguments[1];
+            parsedObject.option.count = Number(countArgument);
             fileStartIndex = 2;
         } else if (arguments[0].startsWith("-") && !(arguments[0].startsWith("-n") || arguments[0].startsWith("-c"))) {
-            parsedObject.option.count = Number(arguments[0].substring(1, arguments[0].length));
+            countArgument = arguments[0].substring(1, arguments[0].length);
+            parsedObject.option.count = Number(countArgument);
             fileStartIndex = 1;
         } else {
-            parsedObject.option.count = Number(arguments[0].substring(2, arguments[0].length));
+            countArgument = arguments[0].substring(2, arguments[0].length);
+            parsedObject.option.count = Number(countArgument);
             fileStartIndex = 1;
+        }
+
+        if (!parsedObject.option.count) {
+            parsedObject.option.illegalCount = countArgument;
         }
     } else {
         parsedObject.option.type = 'line';
@@ -49,21 +58,21 @@ function getParsedObject() {
 }
 
 function executeParsedCommand(parsedObject) {
-    switch(parsedObject.option.type){
-        case 'line':
-            if (parsedObject.option.count) {
-                parsedObject.files.forEach(filePath => {
-                    printLines(parsedObject, filePath);
-                });
-            }
-            break;
-        case 'byte':
-            if (parsedObject.option.count) {
-                parsedObject.files.forEach(filePath => {
-                    printBytes(parsedObject, filePath);
-                });
-            }
-            break;
+    if (parsedObject.option.count) {
+        switch (parsedObject.option.type) {
+            case 'line':
+                    parsedObject.files.forEach(filePath => {
+                        printLines(parsedObject, filePath);
+                    });
+                break;
+            case 'byte':
+                    parsedObject.files.forEach(filePath => {
+                        printBytes(parsedObject, filePath);
+                    });
+                break;
+        }
+    } else {
+        console.log('head: illegal ', parsedObject.option.type , ' count -- ', parsedObject.option.illegalCount);
     }
 }
 
