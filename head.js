@@ -6,8 +6,6 @@ function getArguments() {
 }
 
 function getParsedObject() {
-
-    // console.log(arguments);`
     const parsedObject = {
         files: [],
         option: {
@@ -15,11 +13,7 @@ function getParsedObject() {
             count: 0
         }
     };
-    parseCommand(parsedObject, getArguments());
-    return parsedObject;
-}
 
-function parseCommand(parsedObject, arguments) {
     let fileStartIndex = 0;
 
     if (arguments[0].toString().startsWith("-n")) {
@@ -41,10 +35,11 @@ function parseCommand(parsedObject, arguments) {
         parsedObject.option.count = 10;
     }
 
-    for (let i = fileStartIndex; i < arguments.length; i++) {
+    for (let i = fileStartIndex; i < arguments.length; i++) { // TODO - make imperative declarative
         parsedObject.files.push(arguments[i]);
     }
 
+    return parsedObject;
 }
 
 function executeParsedCommand(parsedObject) {
