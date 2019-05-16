@@ -52,23 +52,23 @@ function executeParsedCommand(parsedObject) {
     switch(parsedObject.option.type){
         case 'line':
             if (parsedObject.option.count) {
-                parsedObject.files.forEach(fileName => {
-                    printLines(parsedObject, fileName);
+                parsedObject.files.forEach(filePath => {
+                    printLines(parsedObject, filePath);
                 });
             }
             break;
         case 'byte':
             if (parsedObject.option.count) {
-                parsedObject.files.forEach(fileName => {
-                    printBytes(parsedObject, fileName);
+                parsedObject.files.forEach(filePath => {
+                    printBytes(parsedObject, filePath);
                 });
             }
             break;
     }
 }
 
-function printBytes(parsedObject, fileName) {
-    const readable = getReadableFileStream(fileName);
+function printBytes(parsedObject, filePath) {
+    const readable = getReadableFileStream(filePath);
     readable.on('data', (chunk) => {
         console.log('chunk size: ', chunk.length);
         if (readable.bytesRead < parsedObject.option.count)
@@ -76,10 +76,10 @@ function printBytes(parsedObject, fileName) {
     }).setEncoding('utf8');
 }
 
-function printLines(parsedObject, fileName) {
+function printLines(parsedObject, filePath) {
     const readLine = require('readline');
     const rl = readLine.createInterface({
-        input: getReadableFileStream(fileName),
+        input: getReadableFileStream(filePath),
         crlfDelay: Infinity
     });
 
@@ -92,18 +92,20 @@ function printLines(parsedObject, fileName) {
         data += line + '\n';
         currentLine++;
     }).on('close', () => {
-        printFileName(fileName);
+        if (parsedObject.files.length > 1) {
+            printFileName(filePath);
+        }
         console.log(data);
     });
 }
 
-function  printFileName(fileName) {
-    console.log('\n ==> ', fileName, ' <==');
+function  printFileName(filePath) {
+    console.log('\n ==> ', filePath, ' <==');
 }
 
-function getReadableFileStream(fileName) {
+function getReadableFileStream(filePath) {
     const fileStream = require('fs');
-    const fs = fileStream.createReadStream(fileName);
+    const fs = fileStream.createReadStream(filePath);
     fs.on('error' , (error) => {
         console.error(error.message);
         return;
