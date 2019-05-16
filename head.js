@@ -49,9 +49,19 @@ function parseRemainingArguments(parsedObject , arguments) {
         parsedObject.option.count = 10;
     }
 
-    for (let i = fileStartIndex; i < arguments.length; i++) { // TODO - make imperative declarative
-        parsedObject.files.push(arguments[i]);
+    parsedObject.files = getFilePathsFromArgumentList(fileStartIndex, arguments);
+
+    // for (let i = fileStartIndex; i < arguments.length; i++) { // TODO - make imperative declarative
+    //     parsedObject.files.push(arguments[i]);
+    // }
+}
+
+function getFilePathsFromArgumentList(index, argumentList) {
+    const filePaths = [];
+    for (let i = index; i < argumentList.length; i++) {
+        filePaths.push(argumentList[i]);
     }
+    return filePaths;
 }
 
 function getParsedOptionType(argument) {
