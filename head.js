@@ -24,10 +24,11 @@ function executeParsedCommand(parsedObject) {
 function printBytes(parsedObject, filePath) {
     const readable = getReadableFileStream(filePath);
     readable.on('data', (chunk) => {
-        console.log('chunk size: ', chunk.length);
-        if (readable.bytesRead < parsedObject.option.count)
-            console.log(chunk);
-    }).setEncoding('utf8');
+        if (parsedObject.files.length > 1) {
+            printFileName(filePath);
+        }
+        console.log(chunk.toString('utf8', 0, parsedObject.option.count));
+    });
 }
 
 function printLines(parsedObject, filePath) {
