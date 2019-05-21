@@ -4,9 +4,9 @@ executeParsedCommand(parser.getParsedObject(process.argv.slice(2)));
 
 function executeParsedCommand(parsedObject) {
     if (parsedObject.option.count) {
-        switch (parsedObject.option.type) {
+        switch (parsedObject.option.type) { // TODO - you might be able to replace this switch condition with an object. Why don't you try that out.
             case 'line':
-                    parsedObject.files.forEach(filePath => {
+                    parsedObject.files.forEach(filePath => { // TODO - see if you can get rid of the duplicated code
                         printLines(parsedObject, filePath);
                     });
                 break;
@@ -17,7 +17,7 @@ function executeParsedCommand(parsedObject) {
                 break;
         }
     } else if(parsedObject.option.illegalCount) {
-        console.log('head: illegal ', parsedObject.option.type , ' count -- ', parsedObject.option.illegalCount);
+        console.log('head: illegal ', parsedObject.option.type , ' count -- ', parsedObject.option.illegalCount); // TODO - long statement
     }
 }
 
@@ -31,8 +31,22 @@ function printBytes(parsedObject, filePath) {
     });
 }
 
-function printLines(parsedObject, filePath) {
-    const readLine = require('readline');
+/*
+SRP - Computation (algorithm) and printing(talking to someone) are 2 things.
+      HEAD                        Web Interface / HTML. console.log()
+*/
+
+
+function printLines(parsedObject, filePath) { // TODO - violates SRP. Lets look at things it does
+    /*
+    1. Load library readline
+    2. Read the file
+    3. Know when to stop reading the file
+    4. Know how to join lines (using \n)
+    5. Depends on console to print
+    6. Conditionally print the file name too ( I thought we print lines? ) -- name's misleading too.
+     */
+    const readLine = require('readline'); // TODO - I am not sure what I feel about doing requires within methods. Vs top level requires. Explicit dependencies are better than implicit dependencies.
     const rl = readLine.createInterface({
         input: getReadableFileStream(filePath),
         crlfDelay: Infinity
@@ -41,7 +55,7 @@ function printLines(parsedObject, filePath) {
     let currentLine = 1;
     let data = '';
 
-    rl.on('line' , (line) => {
+    rl.on('line' , (line) => { // TODO - check performace on a really large file (~1.5GB, 20GB) and compare it with head implemented in bash.
         if (currentLine > parsedObject.option.count)
             return;
         data += line + '\n';
@@ -54,7 +68,7 @@ function printLines(parsedObject, filePath) {
     });
 }
 
-function  printFileName(filePath) {
+function printFileName(filePath) {
     console.log('\n ==> ', filePath, ' <==');
 }
 

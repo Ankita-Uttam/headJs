@@ -15,10 +15,10 @@ module.exports.getParsedObject = (arguments) => {
 };
 
 function parseRemainingArguments(parsedObject , arguments) {
-    let countArgument = null;
+    let countArgument = null; // TODO - wrong scope
     let fileStartIndex = 0;
     if (parsedObject.option.type) {
-        if (arguments[0].endsWith("-n") || arguments[0].endsWith("-c")) {
+        if (arguments[0].endsWith("-n") || arguments[0].endsWith("-c")) { // TODO - long conditions. Give them names.
             countArgument = arguments[1];
             parsedObject.option.count = Number(countArgument);
             fileStartIndex = 2;
@@ -37,7 +37,7 @@ function parseRemainingArguments(parsedObject , arguments) {
         }
     } else {
         parsedObject.option.type = 'line';
-        parsedObject.option.count = 10;
+        parsedObject.option.count = 10; // TODO - magic literal
     }
 
     parsedObject.files = arguments.slice(fileStartIndex);
