@@ -21,12 +21,12 @@ getParsedObject = (arguments) => {
 };
 
 function parseRemainingArguments(parsedObject , arguments) {
-    let countArgument = null; // TODO - wrong scope
     let fileStartIndex = 0;
     if (parsedObject.option.type) {
 
         const endsWithOptionIdentifier = arguments[0].endsWith(LINE_IDENTIFIER) || arguments[0].endsWith(BYTE_IDENTIFIER);
         const lineTypeWithoutLineIdentifier = parsedObject.option.type === LINE && !arguments[0].startsWith(LINE_IDENTIFIER);
+        let countArgument = null;
 
         if (endsWithOptionIdentifier) {
             countArgument = arguments[1];
