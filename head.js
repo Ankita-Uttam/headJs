@@ -81,3 +81,4 @@ function getReadableFileStream(filePath) {
     return fs;
 }
 
+module.exports = { executeParsedCommand };
