@@ -24,11 +24,15 @@ function parseRemainingArguments(parsedObject , arguments) {
     let countArgument = null; // TODO - wrong scope
     let fileStartIndex = 0;
     if (parsedObject.option.type) {
-        if (arguments[0].endsWith(LINE_IDENTIFIER) || arguments[0].endsWith(BYTE_IDENTIFIER)) { // TODO - long conditions. Give them names.
+
+        const endsWithOptionIdentifier = arguments[0].endsWith(LINE_IDENTIFIER) || arguments[0].endsWith(BYTE_IDENTIFIER);
+        const lineTypeWithoutLineIdentifier = parsedObject.option.type === LINE && !arguments[0].startsWith(LINE_IDENTIFIER);
+
+        if (endsWithOptionIdentifier) {
             countArgument = arguments[1];
             parsedObject.option.count = Number(countArgument);
             fileStartIndex = 2;
-        } else if (parsedObject.option.type === LINE && !arguments[0].startsWith(LINE_IDENTIFIER)) {
+        } else if (lineTypeWithoutLineIdentifier) {
             countArgument = arguments[0].substring(1, arguments[0].length);
             parsedObject.option.count = Number(countArgument);
             fileStartIndex = 1;
