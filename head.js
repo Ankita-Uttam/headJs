@@ -32,6 +32,7 @@ function printBytes(parsedObject, filePath) {
     try {
         let data = fs.readFileSync(filePath, 'utf8');
         output = Buffer.from(data).toString('utf8', 0, parsedObject.option.count);
+        console.log('total bytes : ', Buffer.from(data).byteLength);
         // console.log(output);
     } catch(e) {
         // console.log('Error:', e.stack);
@@ -63,7 +64,7 @@ function printLines(parsedObject, filePath) { // TODO - violates SRP. Lets look 
 
     try {
         let data = fs.readFileSync(filePath, 'utf8').split('\n');
-        while (currentLine <= parsedObject.option.count) {
+        while (currentLine <= parsedObject.option.count && currentLine <= data.length) {
             output += data[currentLine - 1] + '\n';
             currentLine++;
         }
