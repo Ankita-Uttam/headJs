@@ -8,19 +8,16 @@ function executeParsedCommand(parsedObject) {
     parsedObject.files.forEach(filepath => {
 
         const fileProperties = getFileProperties(filepath);
+        const optionObject = { // TODO: Object naming
+            'line' : printLines(parsedObject, fileProperties),
+            'byte' : printBytes(parsedObject, fileProperties)
+        };
 
         if (fileProperties.validFilepath && parsedObject.files.length > 1)
             output += printFileName(filepath);
 
         if (parsedObject.option.count) {
-            switch (parsedObject.option.type) { // TODO - you might be able to replace this switch condition with an object. Why don't you try that out.
-                case 'line':
-                    output += printLines(parsedObject, fileProperties);
-                    break;
-                case 'byte':
-                    output += printBytes(parsedObject, fileProperties);
-                    break;
-            }
+            output += optionObject[parsedObject.option.type];
         } else if (parsedObject.option.illegalCount) {
             output += 'head: illegal ' + parsedObject.option.type + ' count -- ' + parsedObject.option.illegalCount;// TODO - long statement
         }
@@ -55,13 +52,8 @@ function printLines(parsedObject, fileProperties) { // TODO - violates SRP. Lets
 
     let output = '';
     let currentLine = 1;
-    // const fileProperties = getFileProperties(filePath);
 
     if (fileProperties.validFilepath) {
-
-        // if (fileProperties.validFilepath && parsedObject.files.length > 1)
-        //     output += printFileName(filePath);
-
         const content = fileProperties.content.split('\n');
         while (currentLine <= parsedObject.option.count && currentLine <= content.length) {
             output += content[currentLine - 1] + '\n';
