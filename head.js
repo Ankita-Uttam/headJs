@@ -4,17 +4,21 @@ const fs = require('fs');
 executeParsedCommand(parser.getParsedObject(process.argv.slice(2)));
 
 function executeParsedCommand(parsedObject) {
-    let output = null;
+    let output = '';
     if (parsedObject.option.count) {
         switch (parsedObject.option.type) { // TODO - you might be able to replace this switch condition with an object. Why don't you try that out.
             case 'line':
                 parsedObject.files.forEach(filePath => { // TODO - see if you can get rid of the duplicated code
-                    output = printLines(parsedObject, filePath);
+                    // if (parsedObject.files.length > 1)
+                    //     output += printFileName(filePath);
+                    output += printLines(parsedObject, filePath);
                 });
                 break;
             case 'byte':
                 parsedObject.files.forEach(filePath => {
-                    output = printBytes(parsedObject, filePath);
+                    // if (parsedObject.files.length > 1)
+                    //     output += printFileName(filePath);
+                    output += printBytes(parsedObject, filePath);
                 });
                 break;
         }
@@ -29,8 +33,11 @@ function executeParsedCommand(parsedObject) {
 function printBytes(parsedObject, filePath) {
     let output = '';
 
+    console.log(filePath);
     try {
         let data = fs.readFileSync(filePath, 'utf8');
+        if (parsedObject.files.length > 1)
+            output += printFileName(filePath);
         output = Buffer.from(data).toString('utf8', 0, parsedObject.option.count);
         console.log('total bytes : ', Buffer.from(data).byteLength);
         // console.log(output);
@@ -64,6 +71,8 @@ function printLines(parsedObject, filePath) { // TODO - violates SRP. Lets look 
 
     try {
         let data = fs.readFileSync(filePath, 'utf8').split('\n');
+        if (parsedObject.files.length > 1)
+            output += printFileName(filePath);
         while (currentLine <= parsedObject.option.count && currentLine <= data.length) {
             output += data[currentLine - 1] + '\n';
             currentLine++;
@@ -78,7 +87,8 @@ function printLines(parsedObject, filePath) { // TODO - violates SRP. Lets look 
 }
 
 function printFileName(filePath) {
-    console.log('\n ==> ', filePath, ' <==');
+    // console.log('\n ==> ', filePath, ' <==');
+    return '\n==> ' + filePath + ' <==\n';
 }
 
 function getReadableFileStream(filePath) {

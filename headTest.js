@@ -93,6 +93,6 @@ describe('test head', () => {
         parsedObject.option.type = 'line';
         parsedObject.option.count = 10;
         assert.deepStrictEqual(head.executeParsedCommand(parsedObject),
-            "==> files/file1.txt <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nENOENT: no such file or directory, open 'invalid.txt'");
+            "\n==> files/file1.txt <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nENOENT: no such file or directory, open 'invalid.txt'");
     });
 });
