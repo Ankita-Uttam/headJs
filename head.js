@@ -5,33 +5,34 @@ executeParsedCommand(parser.getParsedObject(process.argv.slice(2)));
 
 function executeParsedCommand(parsedObject) {
     let output = '';
-    if (parsedObject.option.count) {
-        switch (parsedObject.option.type) { // TODO - you might be able to replace this switch condition with an object. Why don't you try that out.
-            case 'line':
-                parsedObject.files.forEach(filePath => { // TODO - see if you can get rid of the duplicated code
-                    output += printLines(parsedObject, filePath);
-                });
-                break;
-            case 'byte':
-                parsedObject.files.forEach(filePath => {
-                    output += printBytes(parsedObject, filePath);
-                });
-                break;
+    parsedObject.files.forEach(filepath => {
+
+        const fileProperties = getFileProperties(filepath);
+
+        if (fileProperties.validFilepath && parsedObject.files.length > 1)
+            output += printFileName(filepath);
+
+        if (parsedObject.option.count) {
+            switch (parsedObject.option.type) { // TODO - you might be able to replace this switch condition with an object. Why don't you try that out.
+                case 'line':
+                    output += printLines(parsedObject, fileProperties);
+                    break;
+                case 'byte':
+                    output += printBytes(parsedObject, fileProperties);
+                    break;
+            }
+        } else if (parsedObject.option.illegalCount) {
+            output += 'head: illegal ' + parsedObject.option.type + ' count -- ' + parsedObject.option.illegalCount;// TODO - long statement
         }
-    } else if (parsedObject.option.illegalCount) {
-        output = 'head: illegal ' + parsedObject.option.type + ' count -- ' + parsedObject.option.illegalCount;// TODO - long statement
-    }
+    });
     console.log(output);
     return output;
 }
 
-function printBytes(parsedObject, filePath) {
+function printBytes(parsedObject, fileProperties) {
     let output = '';
-    const fileProperties = getFileProperties(filePath);
 
     if (fileProperties.validFilepath) {
-        if (parsedObject.files.length > 1)
-            output += printFileName(filePath);
         output += Buffer.from(fileProperties.content).toString('utf8', 0, parsedObject.option.count);
     } else {
         output += fileProperties.content;
@@ -45,11 +46,8 @@ SRP - Computation (algorithm) and printing(talking to someone) are 2 things.
 */
 
 
-function printLines(parsedObject, filePath) { // TODO - violates SRP. Lets look at things it does
+function printLines(parsedObject, fileProperties) { // TODO - violates SRP. Lets look at things it does
     /*
-    1. Load library readline
-    2. Read the file
-    3. Know when to stop reading the file
     4. Know how to join lines (using \n)
     5. Depends on console to print
     6. Conditionally print the file name too ( I thought we print lines? ) -- name's misleading too.
@@ -57,12 +55,12 @@ function printLines(parsedObject, filePath) { // TODO - violates SRP. Lets look 
 
     let output = '';
     let currentLine = 1;
-    let fileProperties = getFileProperties(filePath);
+    // const fileProperties = getFileProperties(filePath);
 
     if (fileProperties.validFilepath) {
 
-        if (fileProperties.validFilepath && parsedObject.files.length > 1)
-            output += printFileName(filePath);
+        // if (fileProperties.validFilepath && parsedObject.files.length > 1)
+        //     output += printFileName(filePath);
 
         const content = fileProperties.content.split('\n');
         while (currentLine <= parsedObject.option.count && currentLine <= content.length) {
