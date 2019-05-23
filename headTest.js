@@ -13,19 +13,19 @@ describe('test head', () => {
     it ('test default case', ()  => {
         parsedObject.option.type = 'line';
         parsedObject.option.count = 10;
-        assert.deepStrictEqual(head.executeParsedCommand(parsedObject), '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n');
+        assert.deepStrictEqual(head.executeParsedCommand(parsedObject), '1\n2\n3\n4\n5\n6\n7\n8\n9\n10');
     });
     it ("test 15 lines of input file", ()  => {
         parsedObject.option.type = 'line';
         parsedObject.option.count = 15;
         assert.deepStrictEqual(head.executeParsedCommand(parsedObject),
-            '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n');
+            '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15');
     });
     it ("test 50 lines of input file", ()  => {
         parsedObject.option.type = 'line';
         parsedObject.option.count = 50;
         assert.deepStrictEqual(head.executeParsedCommand(parsedObject),
-            '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n');
+            '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20');
     });
     it ('test 10 bytes of input file', ()  => {
         parsedObject.option.type = 'byte';
@@ -60,6 +60,7 @@ describe('test head', () => {
         parsedObject.files = ['invalid.txt'];
         parsedObject.option.type = 'line';
         parsedObject.option.count = 5;
+        parsedObject.option.illegalCount = null;
         assert.deepStrictEqual(head.executeParsedCommand(parsedObject), "ENOENT: no such file or directory, open 'invalid.txt'");
     });
     it ("test 5 bytes of invalid file", () => {
@@ -86,6 +87,7 @@ describe('test head', () => {
         parsedObject.files = ['invalid.txt'];
         parsedObject.option.type = 'line';
         parsedObject.option.count = 10;
+        parsedObject.option.illegalCount = null;
         assert.deepStrictEqual(head.executeParsedCommand(parsedObject), "ENOENT: no such file or directory, open 'invalid.txt'");
     });
     it ("test default configuration with invalid/valid file combo", () => {
@@ -93,6 +95,6 @@ describe('test head', () => {
         parsedObject.option.type = 'line';
         parsedObject.option.count = 10;
         assert.deepStrictEqual(head.executeParsedCommand(parsedObject),
-            "\n==> files/file1.txt <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nENOENT: no such file or directory, open 'invalid.txt'");
+            "==> files/file1.txt <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nENOENT: no such file or directory, open 'invalid.txt'");
     });
 });
