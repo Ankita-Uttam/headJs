@@ -1,34 +1,45 @@
-let parser = require('./parseCliHeadCommand');
+const parser = require('./parseCliHeadCommand');
+const fs = require('fs');
 
 executeParsedCommand(parser.getParsedObject(process.argv.slice(2)));
 
 function executeParsedCommand(parsedObject) {
+    let output = null;
     if (parsedObject.option.count) {
         switch (parsedObject.option.type) { // TODO - you might be able to replace this switch condition with an object. Why don't you try that out.
             case 'line':
-                    parsedObject.files.forEach(filePath => { // TODO - see if you can get rid of the duplicated code
-                        printLines(parsedObject, filePath);
-                    });
+                parsedObject.files.forEach(filePath => { // TODO - see if you can get rid of the duplicated code
+                    output = printLines(parsedObject, filePath);
+                });
                 break;
             case 'byte':
-                    parsedObject.files.forEach(filePath => {
-                        printBytes(parsedObject, filePath);
-                    });
+                parsedObject.files.forEach(filePath => {
+                    output = printBytes(parsedObject, filePath);
+                });
                 break;
         }
     } else if(parsedObject.option.illegalCount) {
-        console.log('head: illegal ', parsedObject.option.type , ' count -- ', parsedObject.option.illegalCount); // TODO - long statement
+        // console.log('head: illegal ', parsedObject.option.type , ' count -- ', parsedObject.option.illegalCount); // TODO - long statement
+        output = 'head: illegal ' + parsedObject.option.type + ' count -- ' + parsedObject.option.illegalCount;
     }
+    console.log(output);
+    return output;
 }
 
 function printBytes(parsedObject, filePath) {
-    const readable = getReadableFileStream(filePath);
-    readable.on('data', (chunk) => {
-        if (parsedObject.files.length > 1) {
-            printFileName(filePath);
-        }
-        console.log(chunk.toString('utf8', 0, parsedObject.option.count));
-    });
+    let output = '';
+
+    try {
+        let data = fs.readFileSync(filePath, 'utf8');
+        output = Buffer.from(data).toString('utf8', 0, parsedObject.option.count);
+        // console.log(output);
+    } catch(e) {
+        // console.log('Error:', e.stack);
+        output = e.message;
+    }
+
+    return output;
+
 }
 
 /*
@@ -46,26 +57,23 @@ function printLines(parsedObject, filePath) { // TODO - violates SRP. Lets look 
     5. Depends on console to print
     6. Conditionally print the file name too ( I thought we print lines? ) -- name's misleading too.
      */
-    const readLine = require('readline'); // TODO - I am not sure what I feel about doing requires within methods. Vs top level requires. Explicit dependencies are better than implicit dependencies.
-    const rl = readLine.createInterface({
-        input: getReadableFileStream(filePath),
-        crlfDelay: Infinity
-    });
 
+    let output = '';
     let currentLine = 1;
-    let data = '';
 
-    rl.on('line' , (line) => { // TODO - check performace on a really large file (~1.5GB, 20GB) and compare it with head implemented in bash.
-        if (currentLine > parsedObject.option.count)
-            return;
-        data += line + '\n';
-        currentLine++;
-    }).on('close', () => {
-        if (parsedObject.files.length > 1) {
-            printFileName(filePath);
+    try {
+        let data = fs.readFileSync(filePath, 'utf8').split('\n');
+        while (currentLine <= parsedObject.option.count) {
+            output += data[currentLine - 1] + '\n';
+            currentLine++;
         }
-        console.log(data);
-    });
+    } catch(e) {
+        // console.log('Error:', e.stack);
+        output = e.message;
+    }
+
+    // console.log(output);
+    return output;
 }
 
 function printFileName(filePath) {

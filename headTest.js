@@ -10,6 +10,6 @@ describe('test head', () => {
                 count: 10,
                 illegalCount: null
             }
-        }), '1\n2\n3\n4\n5\n6\n7\n8\n9\n10');
+        }), '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n');
     });
 });
