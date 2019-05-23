@@ -9,22 +9,17 @@ function executeParsedCommand(parsedObject) {
         switch (parsedObject.option.type) { // TODO - you might be able to replace this switch condition with an object. Why don't you try that out.
             case 'line':
                 parsedObject.files.forEach(filePath => { // TODO - see if you can get rid of the duplicated code
-                    // if (parsedObject.files.length > 1)
-                    //     output += printFileName(filePath);
                     output += printLines(parsedObject, filePath);
                 });
                 break;
             case 'byte':
                 parsedObject.files.forEach(filePath => {
-                    // if (parsedObject.files.length > 1)
-                    //     output += printFileName(filePath);
                     output += printBytes(parsedObject, filePath);
                 });
                 break;
         }
-    } else if(parsedObject.option.illegalCount) {
-        // console.log('head: illegal ', parsedObject.option.type , ' count -- ', parsedObject.option.illegalCount); // TODO - long statement
-        output = 'head: illegal ' + parsedObject.option.type + ' count -- ' + parsedObject.option.illegalCount;
+    } else if (parsedObject.option.illegalCount) {
+        output = 'head: illegal ' + parsedObject.option.type + ' count -- ' + parsedObject.option.illegalCount;// TODO - long statement
     }
     console.log(output);
     return output;
@@ -32,22 +27,16 @@ function executeParsedCommand(parsedObject) {
 
 function printBytes(parsedObject, filePath) {
     let output = '';
+    const fileProperties = getFileProperties(filePath);
 
-    console.log(filePath);
-    try {
-        let data = fs.readFileSync(filePath, 'utf8');
+    if (fileProperties.validFilepath) {
         if (parsedObject.files.length > 1)
             output += printFileName(filePath);
-        output = Buffer.from(data).toString('utf8', 0, parsedObject.option.count);
-        console.log('total bytes : ', Buffer.from(data).byteLength);
-        // console.log(output);
-    } catch(e) {
-        // console.log('Error:', e.stack);
-        output = e.message;
+        output += Buffer.from(fileProperties.content).toString('utf8', 0, parsedObject.option.count);
+    } else {
+        output += fileProperties.content;
     }
-
     return output;
-
 }
 
 /*
@@ -68,36 +57,41 @@ function printLines(parsedObject, filePath) { // TODO - violates SRP. Lets look 
 
     let output = '';
     let currentLine = 1;
+    let fileProperties = getFileProperties(filePath);
 
-    try {
-        let data = fs.readFileSync(filePath, 'utf8').split('\n');
-        if (parsedObject.files.length > 1)
+    if (fileProperties.validFilepath) {
+
+        if (fileProperties.validFilepath && parsedObject.files.length > 1)
             output += printFileName(filePath);
-        while (currentLine <= parsedObject.option.count && currentLine <= data.length) {
-            output += data[currentLine - 1] + '\n';
+
+        const content = fileProperties.content.split('\n');
+        while (currentLine <= parsedObject.option.count && currentLine <= content.length) {
+            output += content[currentLine - 1] + '\n';
             currentLine++;
         }
-    } catch(e) {
-        // console.log('Error:', e.stack);
-        output = e.message;
+    } else {
+        output += fileProperties.content;
     }
 
-    // console.log(output);
     return output;
 }
 
 function printFileName(filePath) {
-    // console.log('\n ==> ', filePath, ' <==');
     return '\n==> ' + filePath + ' <==\n';
 }
 
-function getReadableFileStream(filePath) {
-    const fileStream = require('fs');
-    const fs = fileStream.createReadStream(filePath);
-    fs.on('error' , (error) => {
-        console.error(error.message);
-    });
-    return fs;
+function getFileProperties(filepath) {
+    const properties = {
+        validFilepath: true,
+        content: null
+    };
+    try {
+        properties.content = fs.readFileSync(filepath, 'utf8');
+    } catch (err) {
+        properties.validFilepath = false;
+        properties.content = err.message;
+    }
+    return properties;
 }
 
-module.exports = { executeParsedCommand };
+module.exports = {executeParsedCommand};
