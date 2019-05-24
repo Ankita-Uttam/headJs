@@ -1,8 +1,7 @@
+const optionType = require('./optionType');
 const DEFAULT_COUNT = 10;
 const BYTE_IDENTIFIER = '-c';
 const LINE_IDENTIFIER = '-n';
-const LINE = 'line';
-const BYTE = 'byte';
 
 getParsedObject = (arguments) => {
     const parsedObject = {
@@ -25,7 +24,7 @@ function parseRemainingArguments(parsedObject , arguments) {
     if (parsedObject.option.type) {
 
         const endsWithOptionIdentifier = arguments[0].endsWith(LINE_IDENTIFIER) || arguments[0].endsWith(BYTE_IDENTIFIER);
-        const lineTypeWithoutLineIdentifier = parsedObject.option.type === LINE && !arguments[0].startsWith(LINE_IDENTIFIER);
+        const lineTypeWithoutLineIdentifier = parsedObject.option.type === optionType.Line && !arguments[0].startsWith(LINE_IDENTIFIER);
         let countArgument = null;
 
         if (endsWithOptionIdentifier) {
@@ -46,7 +45,7 @@ function parseRemainingArguments(parsedObject , arguments) {
             parsedObject.option.illegalCount = countArgument;
         }
     } else {
-        parsedObject.option.type = LINE;
+        parsedObject.option.type = optionType.Line;
         parsedObject.option.count = DEFAULT_COUNT;
     }
 
@@ -57,13 +56,13 @@ function parseRemainingArguments(parsedObject , arguments) {
 function getParsedOptionType(argument) {
     let type = null;
     if (argument.startsWith(LINE_IDENTIFIER)) {
-        type = LINE;
+        type = optionType.Line;
     } else if (argument.startsWith(BYTE_IDENTIFIER)) {
-        type = BYTE;
+        type = optionType.Byte;
     } else if (argument.startsWith("-") && Number(arguments[0].substring(1, 2))) {
-        type = LINE;
+        type = optionType.Line;
     }
     return type;
 }
 
-module.exports = { getParsedObject, BYTE, LINE };
+module.exports = { getParsedObject };

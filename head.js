@@ -39,7 +39,6 @@ function executeParsedCommand(parsedObject) {
             output += fileProperties.content;
         }
     }
-    // console.log(output);
     return output;
 }
 
