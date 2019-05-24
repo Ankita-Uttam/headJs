@@ -1,15 +1,18 @@
 const parser = require('./parseCliHeadCommand');
 const fs = require('fs');
+const Console = require('console').Console;
 
-executeParsedCommand(parser.getParsedObject(process.argv.slice(2)));
+printExecutionResult(process.argv.slice(2));
 
-function printExecutionResult(printer) {
-
+function getPrinter() {
+    return new Console(process.stdout, process.stderr);
 }
 
-/*
-     Depends on console to print
-*/
+function printExecutionResult(arguments) {
+    const printer = getPrinter();
+    printer.log(executeParsedCommand(parser.getParsedObject(arguments)));
+}
+
 function executeParsedCommand(parsedObject) {
     let output = '';
     for (let i = 0; i < parsedObject.files.length; i++) {
@@ -36,7 +39,7 @@ function executeParsedCommand(parsedObject) {
             output += fileProperties.content;
         }
     }
-    console.log(output);
+    // console.log(output);
     return output;
 }
 
