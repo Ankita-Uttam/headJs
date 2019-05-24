@@ -3,7 +3,7 @@ const fs = require('fs');
 
 executeParsedCommand(parser.getParsedObject(process.argv.slice(2)));
 
-function printExecutionResult(executionResult, printer) {
+function printExecutionResult(printer) {
 
 }
 
@@ -16,8 +16,8 @@ function executeParsedCommand(parsedObject) {
         const filepath = parsedObject.files[i];
         const fileProperties = getFileProperties(filepath);
         const optionObject = { // TODO: Object naming
-            line: getContentByLines(parsedObject, fileProperties),
-            byte: getContentByBytes(parsedObject, fileProperties)
+            line: getContentByLines(parsedObject.option.count, fileProperties.content.split('\n')),
+            byte: getContentByBytes(parsedObject.option.count, fileProperties.content)
         };
 
         if (fileProperties.validFilepath && parsedObject.option.count) {
@@ -40,20 +40,19 @@ function executeParsedCommand(parsedObject) {
     return output;
 }
 
-function getContentByBytes(parsedObject, fileProperties) {
+function getContentByBytes(size, content) {
     let output = '';
 
-    output += Buffer.from(fileProperties.content).toString('utf8', 0, parsedObject.option.count);
+    output += Buffer.from(content).toString('utf8', 0, size);
 
     return output;
 }
 
-function getContentByLines(parsedObject, fileProperties) {
+function getContentByLines(count, content) {
     let output = '';
     let currentLine = 1;
 
-        const content = fileProperties.content.split('\n');
-        while (currentLine < parsedObject.option.count && currentLine < content.length) {
+        while (currentLine < count && currentLine < content.length) {
             output += addLineFeed(content[currentLine - 1]);
             currentLine++;
         }
